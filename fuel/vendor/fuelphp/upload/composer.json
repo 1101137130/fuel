@@ -1,0 +1,30 @@
+{
+	"name": "fuelphp/upload",
+	"type": "library",
+	"description": "Uploaded file processing.",
+	"keywords": ["Upload", "File uploads"],
+	"homepage": "https://github.com/fuelphp/upload",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "FuelPHP Development Team",
+			"email": "team@fuelphp.com"
+		}
+	],
+	"require": {
+		"php": ">=5.3",
+		"monolog/monolog": "1.5.*",
+		"opauth/opauth": "0.4.*",
+		"opauth/facebook": "dev-master",
+    	"opauth/google": "dev-master",
+    	"opauth/github": "dev-master",
+   		"fuelphp/upload": "2.0"
+	},
+	"require-dev": {
+		"mockery/mockery": "0.7.*"
+	},
+	"autoload": {
+		"psr-0": { "Fuel\\Upload": "src/" }
+	},
+	"minimum-stability": "dev"
+}
