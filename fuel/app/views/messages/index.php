@@ -13,7 +13,7 @@
 					<?php if ($message->name == Auth::instance()->get_screen_name()) :?>
 						<li><?php echo Html::anchor('messages/edit/'.$message->id, __('edit')); 
 							$confirminfo = __('Areyousure')?></li>
-						<li><?php echo Html::anchor('messages/delete/'.$message->id, __('delete'), array('onclick' => "return confirm('$confirminfo')")); ?></li>				
+						<li><?php echo Html::anchor('messages/delete/'.$message->id, __('Delete'), array('onclick' => "return confirm('$confirminfo')")); ?></li>				
 					<?php endif;?>
 
 				</ul>

@@ -18,9 +18,31 @@ class Controller_Messages extends Controller_Template
         //Config::set('language',Input::post('language'));
 
     }
+    public function get_game()
+    {
+        $gameset = array(0 => '石頭', 1 => '布', 2 => '剪刀');
+        $rand = rand(0, 2);
+        $testresult = Format::forge($gameset[$rand])->to_json();
+        return $testresult;
+    }
+    public function post_game()
+    {
+        $client = Input::json('client');
+        switch ($client) {
+            case '石頭';
+                break;
+            case '布';
+                break;
+            case '剪刀';
+                break;
+        }
+        $gameset = array(0 => '石頭', 1 => '布', 2 => '剪刀');
+        $rand = rand(0, 2);
+        $testresult = Format::forge($gameset[$rand])->to_json();
+        return $testresult;
+    }
     public function action_index()
     {
-
         $messages = Model_Message::find('all');
         $comment_links = array();
         foreach ($messages as $message) {

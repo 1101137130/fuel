@@ -65,5 +65,6 @@ return array(
     'passwordmustmatch'=>'密碼必須匹配',
     'Pleaselogin'=>'請重新登入',
     'valid_email'=>'必須是正確的Email格式',
+    'mustnotbeblank'=>'不能輸入空白',
 
 );

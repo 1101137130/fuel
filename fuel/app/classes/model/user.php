@@ -76,6 +76,8 @@ class Model_User extends \Orm\Model
 
             try
             {
+                $username =trim($username);//去頭尾空白
+                $username = preg_replace('/s(?=s)/','',$username); //字串中去空白
                 $user = $auth->create_user($username, $password, $email);
             } catch (Exception $e) {
                 $errors = $e->getMessage();

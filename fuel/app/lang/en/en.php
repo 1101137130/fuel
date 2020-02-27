@@ -65,5 +65,6 @@ return array(
     'passwordmustmatch'=>'The password must match ',
     'Pleaselogin'=>'Please re-login',
     'valid_email'=>'The field :label must contain a valid email address.',
+    'mustnotbeblank'=>'Cant not use space',
 
 );
