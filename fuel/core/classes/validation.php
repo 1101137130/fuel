@@ -235,6 +235,10 @@ class Validation
 	 * @param   string
 	 * @return  string
 	 */
+	public function get_messages()
+	{
+		return $this->error_messages;
+	}
 	public function get_message($rule)
 	{
 		if ( ! array_key_exists($rule, $this->error_messages))
@@ -604,14 +608,14 @@ class Validation
 	public function show_errors($options = array())
 	{
 		$default = array(
-			'open_list'    => \Config::get('validation.open_list', '<ul>'),
-			'close_list'   => \Config::get('validation.close_list', '</ul>'),
-			'open_error'   => \Config::get('validation.open_error', '<li>'),
-			'close_error'  => \Config::get('validation.close_error', '</li>'),
+			'open_list'    => \Config::get('validation.open_list', ''),
+			'close_list'   => \Config::get('validation.close_list', ''),
+			'open_error'   => \Config::get('validation.open_error', ''),
+			'close_error'  => \Config::get('validation.close_error', ''),
 			'no_errors'    => \Config::get('validation.no_errors', '')
 		);
 		$options = array_merge($default, $options);
-
+		
 		if (empty($this->errors))
 		{
 			return $options['no_errors'];
@@ -623,7 +627,6 @@ class Validation
 			$output .= $options['open_error'].$e->get_message().$options['close_error'];
 		}
 		$output .= $options['close_list'];
-
 		return $output;
 	}
 

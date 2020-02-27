@@ -58,10 +58,10 @@
 				{
 					if (Auth::instance()->check())
 					{
-						$link = array(__('Loggedinas') .Auth::instance()->get_screen_name(), Html::anchor('users/logout', __('Logout')), Html::anchor('users/manage',__('Manage')));
+						$link = array(__('Loggedinas') .Auth::instance()->get_screen_name(), Html::anchor('users/logout', __('Logout')), Html::anchor('users/manage',__('manage')));
 					}
 					else{
-						$link = array(Html::anchor('users/login', __('Login')), Html::anchor('users/register', __('Register')));
+						$link = array(Html::anchor('users/login', __('login')), Html::anchor('users/register', __('register')));
 					}
 					echo Html::ul($link);
 				}

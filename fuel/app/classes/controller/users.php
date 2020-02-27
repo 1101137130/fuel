@@ -15,7 +15,7 @@ class Controller_Users extends Controller_Template
         $form = Form::forge('login');
         $form->add('username', __('Username :'));
         $form->add('password', __('Password :'), array('type' => 'password'));
-        $form->add('submit', '', array('type' => 'submit', 'value' => __('Login')));
+        $form->add('submit', '', array('type' => 'submit', 'value' => __('login')));
         if (Input::post()) {
             if ($auth->login(Input::post('username'), Input::post('password'))) {
                 Auth::remember_me($auth->get_id());
@@ -30,7 +30,7 @@ class Controller_Users extends Controller_Template
             }
         }
         $view->set('reg', $form, false);
-        $this->template->title = __('Login');
+        $this->template->title = __('login');
         $this->template->content = $view;
     }
     public function action_chpass()
@@ -69,49 +69,25 @@ class Controller_Users extends Controller_Template
         $this->template->content = $view;
 
     }
-    public function action_edit()
+    public function get_edit()
     {
 
-        $data["subnav"] = array('manage' => 'active');
         $auth = Auth::instance();
         if (!is_null($auth)) {
+            $this->getView('edit', null, null);
 
-            $view = View::forge('users/edit', $data);
-            $form = Form::forge('edit');
-            $form->add('password', 'password', array('type' => 'password'))->add_rule(__('required'));
-            $form->add('email', $auth->get('email'))->add_rule(__('required'));
-            $form->add('submit', '', array('type' => 'submit', 'value' => 'submit'));
-
-            if (Input::post()) {$results = DB::select()
-                    ->from('users')
-                    ->where('username', Input::post('username'))
-                    ->execute();
-                if (count($results) >= 1) {
-                    Session::set_flash(__('error'), __('Usernamerepeated'));
-                } else {
-                    $result = $auth->update_user(array('email' => Input::post('email'), 'old_password' => Input::post('password')));
-                    if ($result) {
-
-                        Session::set_flash(__('success'), __('SuccessgullyChanged'));
-                        Response::redirect('users/manage');
-                        $this->template->title = __('Manage');
-                        $this->template->content = $view;
-
-                    } else {
-                        Session::set_flash(__('error'), __('somethingwentwrong'));
-                        $this->template->title = __('Manage');
-                        $this->template->content = $view;
-                    }
-
-                }
-
-                $this->template->title = __('Manage');
-                $this->template->content = $view;
-            }
-            $view->set('reg', $form, false);
-            $this->template->title = __('Manage');
-            $this->template->content = $view;
+        } else {
+            Session::set_flash(__('error'), __('Pleaselogin'));
+            Response::redirect('users/manage');
         }
+    }
+    public function post_edit()
+    {
+        $auth = Auth::instance();
+        $fieldset = Model_User::email_change_fieldset(Fieldset::forge('edit'));
+        $fieldset->repopulate();
+        $this->getView('edit', $fieldset, null);
+
     }
     public function action_manage()
     {
@@ -126,14 +102,14 @@ class Controller_Users extends Controller_Template
             $view->set('username', $user->username, false);
             $view->set('email', $user->email, false);
             $view->set('id', $user->id, false);
-            $this->template->title = __('Manage');
+            $this->template->title = __('manage');
             $this->template->content = $view;
 
         } else {
             echo "error";
 
         }
-        $this->template->title = __('Manage');
+        $this->template->title = __('manage');
         $this->template->content = $view;
     }
     public function action_logout()
@@ -142,64 +118,86 @@ class Controller_Users extends Controller_Template
         $auth->logout();
         Session::set_flash(__('success'), __('Loggedout'));
         Response::redirect('messages/');
-        //$data["subnav"] = array('logout'=> 'active' );
-        //$this->template->title = 'Users &raquo; Logout';
-        //$this->template->content = View::forge('users/logout', $data);
+
     }
 
     public function action_register($fieldset = null, $errors = null)
     {
-        $data["subnav"] = array('register' => 'active');
+        $this->getView('register', $fieldset, $errors);
+    }
+    //製作view $fieldset與$error可以不傳,傳了代表製作錯誤式判斷的view
+    public function getView($title, $fieldset = null, $errors = null)
+    {
+        $data["subnav"] = array($title => 'active');
         $auth = Auth::instance();
-        $view = View::forge('users/register', $data);
+        $view = View::forge('users/' . $title, $data);
 
-        if (empty($fieldset)) {
-            $fieldset = Fieldset::forge('regiser');
-            Model_User::populate_register_fieldset($fieldset);
+        switch ($title) {
+            case 'register':
+                if (empty($fieldset)) {
+                    $fieldset = Fieldset::forge('register');
+                    Model_User::populate_register_fieldset($fieldset);
+                } else {
+                    $result = Model_User::validate_registration($fieldset, Auth::instance());
+                    if ($result['e_found']) {
+                        Session::set_flash(__('error'), $result['errors']);
+                    } else {
+                        Session::set_flash(__('success'), __('created'));
+                        Auth::remember_me(Auth::get_id());
+                        Response::redirect('./');
+                    }
+                }
+                break;
+            case 'edit':
+                if (empty($fieldset)) {
+                    $fieldset = Fieldset::forge('edit');
+                    Model_User::email_change_fieldset($fieldset);
+                } else {
+                    $result = Model_User::validation_email($fieldset);
+                    if ($result['e_found']) {
+                        Session::set_flash(__('error'), $result['errors']);
+                    } else { $result = $auth->login($auth->get('username'), Input::post('password'));
+                        //如果email沒有問題
+                        //執行檢查密碼是否與使用者符合
+                        if ($result) { //符合就嘗試更改email
+                            try {
+                                $auth->update_user(array('email' => Input::post('email')));
+                                Session::set_flash(__('success'), __('SuccessgullyChanged'));
+                                Response::redirect('users/manage/' . $auth->get('id'));
+                            } catch (Exception $e) {
+                                $error = $e->getMessage();
+                                Session::set_flash(__('error'), $error);
+                                Response::redirect('users/manage/' . $auth->get('id'));
+
+                            }
+                        } else {
+                            Session::set_flash(__('error'), __('passincorect'));
+                            Response::redirect('/');
+                        }
+                    }
+                }
+                break;
         }
-
-        $view->set('reg', $fieldset->build(), false);
-
         if ($errors) {
-            $view->set_safe('errors', $errors);
+            Session::set_flash(__('error'), $errors);
+            //$view->set_safe('errors', $errors);
         }
-
-        $this->template->title = __('Register');
+        $view->set('reg', $fieldset->build(), false);
+        $this->template->title = __($title);
         $this->template->content = $view;
-
     }
 
     public function get_register($fieldset = null, $errors = null)
     {
-        $data["subnav"] = array('register' => 'active');
-        $auth = Auth::instance();
-        $view = View::forge('users/register', $data);
-
-        if (empty($fieldset)) {
-            $fieldset = Fieldset::forge('register');
-            Model_User::populate_register_fieldset($fieldset);
-        }
-
-        $view->set('reg', $fieldset->build(), false);
-        if ($errors) {
-            $view->set_safe('errors', $errors);
-        }
-
-        $this->template->title = __('Register');
-        $this->template->content = $view;
+        $this->getView('register', $fieldset, $errors);
     }
-
     public function post_register()
     {
+
         $fieldset = Model_User::populate_register_fieldset(Fieldset::forge('register'));
         $fieldset->repopulate();
-        $result = Model_User::validate_registration($fieldset, Auth::instance());
-        if ($result['e_found']) {
-            return $this->get_register($fieldset, $result['errors']);
-        }
-        Session::set_flash(__('success'), _('created'));
-        Auth::remember_me(Auth::get_id());
-        Response::redirect('./');
+        $this->getView('register', $fieldset);
+
     }
 
 }

@@ -36,11 +36,9 @@ class Controller_Messages extends Controller_Template
             } else {
                 $comment_links[$message->id] = $count . ' ' . Inflector::pluralize('Comment', $count);
             }
- 
+
         }
-
         $view = View::forge('messages/index');
-
         $view->set('comment_links', $comment_links);
         $view->set('messages', $messages);
         $this->template->title = __('Messages');
