@@ -20,7 +20,7 @@
 			</li>
 		<?php endforeach;  ?>
 	</ul>
-<?php else: ?>
+<?php else: ?>	
 	
 	<p><?php echo __('NoMessages') ?>
 

@@ -63,11 +63,7 @@ class Model_User extends \Orm\Model
         $val->set_message('required', __('required'));
         $val->set_message('vaild_email', __('mustbeanemail'));
         $val->set_message('match_value', __('passwordmustmatch'));
-        // $emailvail = $this->validation_email($form);
-        // if ($emailvail['e_found'] == true) {
-        //     $error = $emailvail['errors'];
-        //     return array('e_found' => true, 'errors' => $errors);
-        // }
+ 
 
         if ($val->run()) {
             $username = $form->field('username')->get_attribute('value');
