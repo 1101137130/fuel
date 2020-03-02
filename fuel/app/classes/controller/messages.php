@@ -4,7 +4,7 @@ class Controller_Messages extends Controller_Template
     public function before()
     {
         if (!Session::get('lang')) {
-            Session::set('lang', 'en');
+            Session::set('lang', 'en-us.yml');
         }
         Lang::load(Session::get('lang'));
         return parent::before();
@@ -12,8 +12,8 @@ class Controller_Messages extends Controller_Template
     }
     public function action_lang()
     {
+        Lang::delete(Lang::get_lang());
         Session::set('lang', $_POST['val']);
-        //Lang::delete(Lang::get_lang());
         Response::redirect('messages');
         //Config::set('language',Input::post('language'));
 

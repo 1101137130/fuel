@@ -78,8 +78,8 @@ return array(
 	/**
 	 * Localization & internationalization settings
 	 */
-	 'language'           => 'en', // Default language
-	 'language_fallback'  => 'en', // Fallback language when file isn't available for default language
+	 'language'           => '', // Default language
+	 'language_fallback'  => '', // Fallback language when file isn't available for default language
 	 'locale'             => null, // PHP set_locale() setting, null to not set
 
 	/**
@@ -310,7 +310,7 @@ return array(
 		 * add it like 'validation' => 'forms'.
 		 * If you don't want the lang in a group use null as groupname.
 		 */
-		 /**'language'  => array('en'),*/
+		 'language'  => array('en-us.yml'),
 	 ),
 
 );

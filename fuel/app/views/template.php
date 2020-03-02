@@ -6,8 +6,8 @@
 
 	<select id="language_dropdown" name ='language_dropdown'>
 		<option selected="selected">Language</option>
-		<option value = 'en' >English</option>
-		<option value = 'ct'>繁體中文</option>
+		<option value = 'en-us.yml' >English</option>
+		<option value = 'zh-tw.yml'>繁體中文</option>
 	</select>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script type="text/javascript">
