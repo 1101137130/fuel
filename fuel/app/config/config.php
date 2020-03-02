@@ -78,8 +78,8 @@ return array(
 	/**
 	 * Localization & internationalization settings
 	 */
-	 'language'           => 'en', // Default language
-	 'language_fallback'  => 'en', // Fallback language when file isn't available for default language
+	 'language'           => '', // Default language
+	 'language_fallback'  => '', // Fallback language when file isn't available for default language
 	 'locale'             => null, // PHP set_locale() setting, null to not set
 
 	/**

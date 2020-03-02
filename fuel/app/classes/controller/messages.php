@@ -12,8 +12,8 @@ class Controller_Messages extends Controller_Template
     }
     public function action_lang()
     {
+        Lang::delete(Lang::get_lang());
         Session::set('lang', $_POST['val']);
-        //Lang::delete(Lang::get_lang());
         Response::redirect('messages');
         //Config::set('language',Input::post('language'));
 
